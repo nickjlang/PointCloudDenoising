@@ -72,7 +72,11 @@ def run(args):
             #Get predictions
             pred = model(data[0].cuda(), data[1].cuda())
             #print(pred.shape)
-            pred = pred[[:], 1:, :, :]
+
+            #TODO: remove the unlabeled prediction label
+    
+
+            #choose argmax prediction for each point
             pred = torch.argmax(pred, dim=1, keepdim=True)
             #print(pred.shape)
 
@@ -89,6 +93,8 @@ def run(args):
 
             label_dict= {0:0, 1:100, 2:101, 3:102}
             label_1 = np.vectorize(label_dict.get)(label_1)
+
+            #TODO: Remove non-valid points
 
 
             #<KeysViewHDF5 ['distance_m_1', 'intensity_1', 'labels_1', 'sensorX_1', 'sensorY_1', 'sensorZ_1']>
