@@ -1,0 +1,8 @@
+pykitti
+Pillow
+numpy
+tensorboardX
+torch
+torchvision
+pytorch-ignite
+h5py==2.9.0
