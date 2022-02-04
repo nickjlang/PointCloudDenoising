@@ -25,9 +25,12 @@ def get_reflectivity(cloud_array, remove_nans=True, dtype=np.float):
 
 
 def callback(data) :
-    # returns a 3xN matrix for x,y,z coordinates
-    xyz_array = ros_numpy.point_cloud2.get_xyz_points(data)
-    # returns a 1xN matrix for reflectivity
+    pc = ros_numpy.numpify(data)
+    points=np.zeros((pc.shape[0],4))
+    points[:,0]=pc['x']
+    points[:,1]=pc['y']
+    points[:,2]=pc['z']
+    points[:,3]=pc['reflectivity']
     #reflectivity_1 = get_reflectivity(data)
 
     # NEED TO CONFIRM AXIS DIRECTION ON THIS
@@ -44,13 +47,13 @@ def callback(data) :
 
     #simple manipulation
     # double all point coordinates
-    xyz_array[...,0:3] = xyz_array[...,0:3]*2
+    points[:,:3] = points[:,:3] * 2
 
     #convert back to pointcloud2 and return
     output = data.copy()
-    output['x'] = xyz_array[...,0]
-    output['y'] = xyz_array[...,1]
-    output['z'] = xyz_array[...,2]
+    output['x'] = points[:,0]
+    output['y'] = points[:,1]
+    output['z'] = points[:,2]
 
     rospy.Publisher('PCD_points' , PointCloud2, output)
 
