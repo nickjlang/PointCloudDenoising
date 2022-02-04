@@ -26,11 +26,11 @@ def get_reflectivity(cloud_array, remove_nans=True, dtype=np.float):
 
 def callback(data) :
     pc = ros_numpy.numpify(data)
-    points=np.zeros((pc.shape[0],4))
-    points[:,0]=pc['x']
-    points[:,1]=pc['y']
-    points[:,2]=pc['z']
-    points[:,3]=pc['reflectivity']
+    points=np.zeros((pc.shape ,4))
+    points[:,:,0]=pc['x']
+    points[:,:,1]=pc['y']
+    points[:,:,2]=pc['z']
+    points[:,:,3]=pc['reflectivity']
     #reflectivity_1 = get_reflectivity(data)
 
     # NEED TO CONFIRM AXIS DIRECTION ON THIS
