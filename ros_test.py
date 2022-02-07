@@ -25,7 +25,7 @@ def get_reflectivity(cloud_array, remove_nans=True, dtype=np.float):
 
 
 def callback(data) :
-    pc = ros_numpy.numpify(data)
+    pc = ros_numpy.point_cloud2.pointcloud2_to_array(data)
     points=np.zeros((pc.shape ,4))
     points[:,:,0]=pc['x']
     points[:,:,1]=pc['y']
@@ -50,10 +50,11 @@ def callback(data) :
     points[:,:3] = points[:,:3] * 2
 
     #convert back to pointcloud2 and return
-    output = data.copy()
-    output['x'] = points[:,0]
-    output['y'] = points[:,1]
-    output['z'] = points[:,2]
+    pc['x'] = points[:,0]
+    pc['y'] = points[:,1]
+    pc['z'] = points[:,2]
+
+    output = ros_numpy.point_cloud2.array_to_pointcloud2(pc)
 
     rospy.Publisher('PCD_points' , PointCloud2, output)
 
