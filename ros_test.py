@@ -32,9 +32,9 @@ def denoise(model, distance_1, reflectivity_1) :
 
     return labels
 
-def callback(data) :
+def callback(data, args) :
 
-    global model
+    model = args[0]
 
     pub = rospy.Publisher('PCD_points' , PointCloud2, queue_size=1)
     pc = ros_numpy.point_cloud2.pointcloud2_to_array(data)
@@ -96,7 +96,7 @@ def main() :
 
     #init ros node pub/sub and spin up
     rospy.init_node("PC_Denoiser")
-    rospy.Subscriber("/lidar/parent/points_raw", PointCloud2, callback, queue_size=1)
+    rospy.Subscriber("/lidar/parent/points_raw", PointCloud2, callback, (model), queue_size=1)
     rospy.spin()
 
 if __name__ == '__main__' :
