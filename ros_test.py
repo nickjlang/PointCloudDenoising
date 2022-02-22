@@ -34,6 +34,8 @@ def denoise(model, distance_1, reflectivity_1) :
 
 def callback(data) :
 
+    global model
+
     pub = rospy.Publisher('PCD_points' , PointCloud2, queue_size=1)
     pc = ros_numpy.point_cloud2.pointcloud2_to_array(data)
     
@@ -51,7 +53,7 @@ def callback(data) :
 
     ##PYTORCH BLOCK
     #call model and get the labeled predictions
-    labels = denoise(distance_1, reflect)
+    labels = denoise(model, distance_1, reflect)
     
     #index invalid points
     labelsind = labels[not labels == 1]
