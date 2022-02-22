@@ -5,6 +5,7 @@ import rospy
 import ros_numpy
 from sensor_msgs.msg import PointCloud2
 import torch
+from torch.utils.data import DataLoader
 
 from weathernet.datasets import DENSE
 from weathernet.model import WeatherNet
@@ -14,8 +15,11 @@ def denoise(model, distance_1, reflectivity_1) :
     distance = torch.as_tensor(distance_1.astype(np.float32, copy=False)).contiguous()
     reflectivity = torch.as_tensor(reflectivity_1.astype(np.float32, copy=False)).contiguous()
 
+    loader = DataLoader((distance,reflectivity))
+
     #Get predictions
-    pred = model(distance.cuda(), reflectivity.cuda())
+    with torch.no_grad() :
+        pred = model(loader[0].cuda(), loader[1].cuda())
     #print(pred.shape)
 
     #TODO: remove the unlabeled prediction label
@@ -34,7 +38,7 @@ def denoise(model, distance_1, reflectivity_1) :
 
 def callback(data, args) :
 
-    model = args[0]
+    model = args
 
     pub = rospy.Publisher('PCD_points' , PointCloud2, queue_size=1)
     pc = ros_numpy.point_cloud2.pointcloud2_to_array(data)
@@ -96,7 +100,7 @@ def main() :
 
     #init ros node pub/sub and spin up
     rospy.init_node("PC_Denoiser")
-    rospy.Subscriber("/lidar/parent/points_raw", PointCloud2, callback, (model), queue_size=1)
+    rospy.Subscriber("/lidar/parent/points_raw", PointCloud2, callback, model, queue_size=1)
     rospy.spin()
 
 if __name__ == '__main__' :
