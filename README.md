@@ -24,10 +24,14 @@ Information: Click [here](https://www.uni-ulm.de/index.php?id=101568) for regist
 
 ## Usage
 
-Train model:
+Train model: train_dense.py trains the model on the given dataset/directory
 
 **Important**: The ```dataset-dir``` must contain the ```train_01```, ```test_01``` and the ```val_01``` folder.
 
 ```bash
 python train_dense.py
 ```
+
+Test model: test.py opens a saved model, classifies points in an HDF5 file, and saves the resulting classified points.
+
+ROS Pipeline: ros_test.py runs a ros pipeline subscribing to a PointCloud2 topic and classifies/denoises the points beforepublishing a new PointCloud2 topic.
